@@ -10,9 +10,7 @@
       text-align: center;
       direction: rtl;
     }
-    h1 {
-      margin: 20px;
-    }
+    h1 { margin: 20px; }
     #grid {
       margin: 20px auto;
       display: grid;
@@ -46,19 +44,9 @@
       color: #555;
       display: none;
     }
-    .correct {
-      background-color: #c9f7c9;
-    }
-    #result {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    #congrats {
-      margin-top: 20px;
-      font-size: 18px;
-      color: green;
-      font-weight: bold;
-    }
+    .correct { background-color: #c9f7c9; }
+    #result { margin-top: 20px; font-weight: bold; }
+    #congrats { margin-top: 20px; font-size: 18px; color: green; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -77,70 +65,92 @@
     const headers = ["", "A", "B", "C", "D", "E"];
     const rows = ["1", "2", "3", "4"];
 
+    // === Updated EPL 2025/26 teams ===
     const correctAnswers = {
-      A1: "مانشستر سيتي",
-      B1: "آرسنال",
-      C1: "تشيلسي",
-      D1: "نيوكاسل",
-      E1: "ليفربول",
-      A2: "برايتون",
-      B2: "كريستال بالاس",
-      C2: "أستون فيلا",
-      D2: "وولفرهامبتون",
+      A1: "أرسنال",
+      B1: "توتنهام",
+      C1: "وست هام",
+      D1: "كريستال بالاس",
+      E1: "تشيلسي",
+      A2: "ساوثهامبتون",
+      B2: "مانشستر يونايتد",
+      C2: "فولهام",
+      D2: "بورنموث",
       E2: "نوتنغهام فوريست",
-      A3: "فولهام",
-      B3: "بورنموث",
-      C3: "بيرنلي",
-      D3: "برينتفورد",
-      E3: "ليستر سيتي",
-      A4: "إيفرتون",
-      B4: "توتنهام",
-      C4: "مانشستر يونايتد",
-      D4: "وست هام",
-      E4: "ليدز يونايتد"
+      A3: "ليدز يونايتد",
+      B3: "برينتفورد",
+      C3: "ليفربول",
+      D3: "نيوكاسل",
+      E3: "بيرنلي",
+      A4: "أستون فيلا",
+      B4: "مانشستر سيتي", // deduced by elimination
+      C4: "وولفرهامبتون",
+      D4: "برايتون",
+      E4: "إيفرتون"
     };
 
     const altAnswers = {
-      "مانشستر سيتي": ["مان سيتي", "مانشيستر سيتي"],
-      "آرسنال": ["ارسنال"],
+      "أرسنال": ["ارسنال"],
+      "توتنهام": ["توتنهام هوتسبر"],
+      "وست هام": ["ويست هام","ويستهام","وستهام"],
+      "كريستال بالاس": ["بالاس","كريستال"],
       "تشيلسي": ["تشلسي"],
-      "نيوكاسل": ["نيوكاسل يونايتد"],
-      "ليفربول": ["ليڤربول"],
-      "برايتون": ["برايتن"],
-      "كريستال بالاس": ["بالاس", "كريستال"],
-      "أستون فيلا": ["فيلا", "استون فيلا"],
-      "وولفرهامبتون": ["وولفز", "ولفز"],
-      "نوتنغهام فوريست": ["فوريست", "نوتنغهام"],
+      "ساوثهامبتون": ["ساوث","ساوثهامبتن"],
+      "مانشستر يونايتد": ["مان يونايتد","مانشيستر يونايتد"],
       "فولهام": ["فولام"],
       "بورنموث": ["بورنمث"],
-      "بيرنلي": ["بيرنلي"],
-      "برينتفورد": ["برينتفورد"],
-      "ليستر سيتي": ["ليستر"],
-      "إيفرتون": ["ايفرتون"],
-      "توتنهام": ["توتنهام هوتسبر"],
-      "مانشستر يونايتد": ["مان يونايتد", "مانشيستر يونايتد"],
-      "وست هام": ["ويست هام", "ويستهام"],
-      "ليدز يونايتد": ["ليدز"]
+      "نوتنغهام فوريست": ["فوريست","نوتنغهام","فورست"],
+      "ليدز يونايتد": ["ليدز"],
+      "برينتفورد": [],
+      "ليفربول": ["ليڤربول"],
+      "نيوكاسل": ["نيوكاسل يونايتد"],
+      "بيرنلي": [],
+      "أستون فيلا": ["فيلا","استون فيلا"],
+      "مانشستر سيتي": ["مان سيتي","مانشيستر سيتي","مانشستر ستي"],
+      "وولفرهامبتون": ["ولفز","وولفز"],
+      "برايتون": ["برايتن"],
+      "إيفرتون": ["ايفرتون"]
     };
 
+    // === All new clues (direct + indirect stacked) ===
     const clues = {
-      A1: "Sadio Mané scored the fastest hat-trick in Premier League history against this club.",
-      C1: "Pierre-Emerick Aubameyang played for both clubs in this column.",
-      D1: "Alexander Isak scored a brace on his full debut for this club.",
-      E1: "Luis Suárez scored four goals against this club in one match.",
-      A2: "Crystal Palace and Brighton — the two bird-logo clubs — are in the same column.",
-      B2: "Divock Origi scored a last-minute winner against this club after Pickford’s error.",
-      C2: "Olivier Giroud scored a famous scorpion-kick goal against this club.",
-      D2: "This club shares its column with Wout Weghorst’s only Premier League goal victim.",
-      E2: "Fulham, Bournemouth and Nottingham Forest were all promoted in 2022 — they’re in the same row.",
-      B3: "Son Heung-min won the Puskás Award for a solo goal against this club.",
-      C3: "Jude Bellingham scored a hat-trick against this club in a 2024 friendly.",
-      D3: "This club shares a row with Brentford, the only Premier League team with a bee in its crest.",
-      A4: "This club shares a row with one where Georginio Wijnaldum used to play.",
-      B4: "Harry Kane scored his 200th Premier League goal against this club.",
-      C4: "Wout Weghorst scored his only PL goal for Manchester United against this club.",
-      D4: "This club has a stadium named after the River Thames (sort of).",
-      E4: "This club completes the team of promoted 2022 clubs row."
+      A1: "النادي في هذه الخانة هو أرسنال. الخصم في ديربي شمال لندن هو في الخانة B1.",
+
+      B1: "جار أرسنال اللدود في ديربي شمال لندن — اكتب الجواب في الخانة C1.",
+
+      C1: "لقبهم المطارق ويلعبون في استاد لندن — اكتب الجواب في الخانة D1.",
+
+      D1: "أوليفييه جيرو سجل هدف العقرب الشهير ضد هذا النادي — اكتب الجواب في الخانة C4.",
+
+      C4: "الهداف التاريخي لهم في البريميرليغ راؤول خيمينيز — اكتب الجواب في الخانة D4.",
+
+      D4: "هذا النادي يُعرف بالنوارس (Seagulls). مع كريستال بالاس يشتركان في صف 4. اكتب الجواب في الخانة A4.",
+
+      A4: "ساديو ماني سجل أسرع هاتريك في البريميرليغ ضد هذا النادي في 2015 — اكتب الجواب في الخانة E4. (ملاحظة: في هذا الصف أيضًا ناديا الطيور).",
+
+      E4: "ملعبهم غوديسون بارك ويخوضون ديربي الميرسيسايد ضد جارهم — اكتب الجواب في الخانة C3.",
+
+      C3: "نشيدهم الشهير You’ll Never Walk Alone — اكتب الجواب في الخانة D3.",
+
+      D3: "الهداف التاريخي للبريميرليغ (260 هدفًا) لعب لهذا النادي — اكتب الجواب في الخانة E3.",
+
+      E3: "جان جنون الكوري علّق على هدف سون الشهير ضد هذا النادي — اكتب الجواب في الخانة A2.",
+
+      A2: "هذا النادي خسر 9-0 مرتين في تاريخ البريميرليغ — اكتب الجواب في الخانة C2.",
+
+      C2: "ملعبهم Craven Cottage ويُعرفون بالـ Cottagers — اكتب الجواب في الخانة D2.",
+
+      D2: "ملعبهم Vitality Stadium ويُعرفون بالـ Cherries — اكتب الجواب في الخانة E2.",
+
+      E2: "بطل أوروبا مرتين ويلعب في City Ground — اكتب الجواب في الخانة B2.",
+
+      B2: "براين مبومو لعب لكلا الناديين في هذا العمود: برينتفورد ومانشستر يونايتد. ضع مانشستر يونايتد هنا. (عمود B يحتوي على 3 أندية من لندن + واحد خارج لندن).",
+
+      B3: "نادي البلوز من ستامفورد بريدج — اكتب الجواب في الخانة B4.",
+
+      B4: "هذا النادي من غرب لندن يُعرف بالـ Bees. (مع تشيلسي وتوتنهام يشكّلون ثلاثيًا من لندن في العمود B).",
+
+      A3: "النادي في هذه الخانة يُلقب بالوايتس ويلعب في Elland Road — اكتب الجواب في الخانة B3."
     };
 
     function startQuiz() {
