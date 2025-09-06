@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تحدي أندية البريميرليغ - موسم 2025/2026</title>
+  <style>
+    body {
+      font-family: 'Tahoma', sans-serif;
+      background: #f7f7f7;
+      text-align: center;
+      direction: rtl;
+    }
+    h1 {
+      margin: 20px;
+    }
+    #grid {
+      margin: 20px auto;
+      display: grid;
+      grid-template-columns: repeat(6, 120px);
+      gap: 2px;
+    }
+    .cell {
+      border: 1px solid #999;
+      padding: 8px;
+      background: white;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .header {
+      background: #e0e0e0;
+      font-weight: bold;
+    }
+    .input {
+      width: 100%;
+      height: 30px;
+      border: none;
+      text-align: center;
+      font-size: 14px;
+    }
+    .clue {
+      font-size: 12px;
+      margin-top: 4px;
+      color: #555;
+      display: none;
+    }
+    .correct {
+      background-color: #c9f7c9;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    #congrats {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>تحدي أندية البريميرليغ - موسم 2025/2026</h1>
+  <p>أدخل اسم الفريق في الخانة الصحيحة لتكشف التلميح. خطأ واحد يُنهي اللعبة!</p>
+  <div style="margin-bottom:10px">
+    <input type="text" id="username" placeholder="اكتب اسمك لبدء التحدي">
+    <button onclick="startQuiz()">ابدأ</button>
+    <button onclick="resetGame()">إعادة المحاولة</button>
+  </div>
+  <div id="grid"></div>
+  <div id="result"></div>
+  <div id="congrats"></div>
+
+  <script>
+    const headers = ["", "A", "B", "C", "D", "E"];
+    const rows = ["1", "2", "3", "4"];
+    const correctAnswers = {
+      A1: "مانشستر سيتي",
+      B1: "أرسنال",
+      C1: "ليفربول",
+      D1: "بيرنلي",
+      E1: "كريستال بالاس",
+      A2: "تشيلسي",
+      B2: "برايتون",
+      C2: "نيوكاسل",
+      D2: "ليستر سيتي",
+      E2: "فولهام",
+      A3: "توتنهام",
+      B3: "إيفرتون",
+      C3: "نوتنغهام فوريست",
+      D3: "برينتفورد",
+      E3: "شيفيلد يونايتد",
+      A4: "وست هام",
+      B4: "وولفرهامبتون",
+      C4: "بورنموث",
+      D4: "أستون فيلا",
+      E4: "مانشستر يونايتد"
+    };
+
+    const altAnswers = {
+      "مانشستر سيتي": ["مان سيتي", "مانشيستر سيتي", "مانشستر ستي"],
+      "أرسنال": ["ارسنال"],
+      "ليفربول": ["ليڤربول"],
+      "بيرنلي": ["بيرنلي"],
+      "كريستال بالاس": ["بالاس", "كريستال"],
+      "تشيلسي": ["تشلسي"],
+      "برايتون": ["برايتن"],
+      "نيوكاسل": ["نيوكاسل يونايتد"],
+      "ليستر سيتي": ["ليستر"],
+      "فولهام": ["فولام"],
+      "توتنهام": ["توتنهام هوتسبر"],
+      "إيفرتون": ["ايفرتون"],
+      "نوتنغهام فوريست": ["فوريست", "نوتنغهام", "فورست"],
+      "برينتفورد": ["برينتفورد"],
+      "شيفيلد يونايتد": ["شيفيلد"],
+      "وست هام": ["ويست هام", "ويستهام", "وستهام"],
+      "وولفرهامبتون": ["ولفز", "وولفز"],
+      "بورنموث": ["بورنمث"],
+      "أستون فيلا": ["فيلا", "استون فيلا"],
+      "مانشستر يونايتد": ["مان يونايتد", "مانشيستر يونايتد"]
+    };
+
+    const clues = {
+      A1: "جود بيلينغهام سجل هاتريك ضد هذا الفريق في مباراة ودية عام 2024.",
+      B1: "أوباميانغ لعب مع الفريقين في هذا العمود.",
+      C1: "ديفوك أوريجي سجل هدف الفوز الأخير ضد هذا الفريق بعد خطأ من بيكفورد.",
+      D1: "سون هيونغ-مين فاز بجائزة بوشكاش بهدف فردي ضد هذا الفريق.",
+      E1: "جيرود سجل هدف العقرب الشهير ضد هذا الفريق.",
+      A2: "ساديو ماني سجل أسرع هاتريك في تاريخ البريميرليغ ضد هذا الفريق.",
+      B2: "النوارس والذئاب في هذا الصف.",
+      C2: "فينالدوم لعب مع الفريقين في هذا الصف.",
+      D2: "الأندية التي صعدت في 2022 — فولهام، بورنموث، نوتنغهام — في نفس الصف.",
+      E2: "سجل الهدف الوحيد في مرمى مانشستر يونايتد لهذا الفريق ويغهورست.",
+      A3: "كولومبيا × إنجلترا: هذا النادي لديه أكثر عدد من اللاعبين الذين لعبوا تلك المباراة في 2018.",
+      B3: "الأندية التي تحمل أسماء أنهار إنجليزية في نفس العمود.",
+      C3: "أندية تمتلك غابة في شعاراتها موجودة في نفس العمود.",
+      D3: "برايتون وكريستال بالاس يشتركان في طائر في الشعار، وهما في نفس العمود.",
+      E3: "تمتد ذكرى الفريق حتى فترة ميسي مع برشلونة — إذ سجل عليه مرتين في دوري الأبطال.",
+      A4: "اللاعبين الذين فازوا بالدوري الأوروبي مع هذا الفريق: ديكلان رايس، باكيتا، وغيرهم.",
+      B4: "هذا النادي يعتمد بشكل رئيسي على الأكاديمية في التشكيلة الأساسية منذ 2021.",
+      C4: "هذا الفريق تعرّض لخسارة مذلة أمام ليفربول في 2023 (9-0).",
+      D4: "هذا الفريق تلقى أهدافًا من لاعبين عرب في 5 مباريات متتالية في موسم 2022-2023.",
+      E4: "رونالدو سجل آخر أهدافه في البريميرليغ ضد هذا الفريق."
+    };
+
+    function startQuiz() {
+      const username = document.getElementById("username").value.trim();
+      if (!username) return alert("الرجاء إدخال الاسم أولاً");
+      buildGrid(username);
+    }
+
+    function buildGrid(username) {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      document.getElementById("congrats").textContent = "";
+      document.getElementById("result").textContent = "";
+
+      headers.forEach(h => {
+        const cell = document.createElement("div");
+        cell.textContent = h;
+        cell.className = "cell header";
+        grid.appendChild(cell);
+      });
+
+      rows.forEach((row) => {
+        const rowLabel = document.createElement("div");
+        rowLabel.textContent = row;
+        rowLabel.className = "cell header";
+        grid.appendChild(rowLabel);
+
+        for (let c = 1; c < headers.length; c++) {
+          const col = headers[c];
+          const cellKey = col + row;
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          const input = document.createElement("input");
+          input.className = "input";
+          input.dataset.key = cellKey;
+
+          const clue = document.createElement("div");
+          clue.className = "clue";
+          clue.textContent = clues[cellKey] || "";
+
+          if (cellKey === "A1") {
+            input.value = correctAnswers[cellKey];
+            input.disabled = true;
+            cell.classList.add("correct");
+            clue.style.display = "block";
+          }
+
+          input.addEventListener("change", () => {
+            const answer = input.value.trim().toLowerCase().replace(/\s|\u200f/g, "");
+            const correct = correctAnswers[cellKey];
+            if (!correct) return;
+
+            const validAnswers = [correct.replace(/\s|\u200f/g, "").toLowerCase()]
+              .concat((altAnswers[correct] || []).map(v => v.replace(/\s|\u200f/g, "").toLowerCase()));
+
+            if (validAnswers.includes(answer)) {
+              input.disabled = true;
+              cell.classList.add("correct");
+              clue.style.display = "block";
+
+              const allCorrect = Array.from(document.querySelectorAll(".input"))
+                .every(inp => inp.disabled);
+
+              if (allCorrect) {
+                const name = document.getElementById("username").value;
+                document.getElementById("congrats").textContent = `🎉 مبروك ${name} !`;
+              }
+            } else {
+              document.getElementById("result").textContent = "إجابة خاطئة! اللعبة انتهت.";
+              document.querySelectorAll(".input").forEach(i => i.disabled = true);
+            }
+          });
+
+          cell.appendChild(input);
+          cell.appendChild(clue);
+          grid.appendChild(cell);
+        }
+      });
+    }
+
+    function resetGame() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
